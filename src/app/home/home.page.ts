@@ -30,16 +30,14 @@ export class HomePage {
       });
      
     }
-
+//Scan QR Code
     startScanning() {
-      // Optionally request the permission early
-     // (window.document.querySelector('ion-app') as HTMLElement).classList.add('cameraView');
       this.qrScanner.prepare().
         then((status: QRScannerStatus) => {
           if (status.authorized) {
             this.qrScanner.show();
             this.scanSub = document.getElementsByTagName('body')[0].style.opacity = '0';
-          // debugger
+         
             this.scanSub = this.qrScanner.scan()
               .subscribe((textFound: string) => {
                 document.getElementsByTagName('body')[0].style.opacity = '1';
@@ -51,18 +49,14 @@ export class HomePage {
                 if(this.qrText ){
                   this.router.navigate(['store/'+this.qrText]);
                   }
-                  else{
-                    console.log('postcode is not scanned')
-                  }
+                 
                 
               }, (err) => {
                 alert(JSON.stringify(err));
               });
   
           } else if (status.denied) {
-          } else {
-  
-          }
+          } 
         })
         .catch((e: any) => console.log('Error is', e));
        
