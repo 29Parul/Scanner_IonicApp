@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Store Finder</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <ion-card >
+    <ion-item>
+      <ion-label>Scanned Postcode:   </ion-label>     
+      <ion-input > {{ data }}</ion-input>
+    </ion-item> 
+      <ion-button (click)=" forwardGeocode()">Find Store</ion-button>
+   
+    
+    </ion-card>
+    <div #map id="map"  style="width:100%; height:100%"></div>
+    
+    
+  
+</ion-content>
