@@ -11,6 +11,10 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
+  {
+    path: 'store/:qrText',
+    loadChildren: () => import('./store/store.module').then( m => m.StorePageModule)
+  },
 ];
 
 @NgModule({
