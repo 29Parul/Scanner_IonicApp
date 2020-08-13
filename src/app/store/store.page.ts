@@ -11,11 +11,11 @@ declare var google;
   styleUrls: ['./store.page.scss'],
 })
 export class StorePage implements OnInit {
-data:any;
+data:string;
 places : Array<any>; 
 @ViewChild('map') mapElement: ElementRef;
-lat:any;
-  lng:any;
+lat:string;
+  lng:string;
   location:any;
   latLngResult:any;
 map: any;
@@ -24,15 +24,13 @@ marker: any;
 
   constructor(public zone: NgZone,public platform: Platform,
     private nativeGeocoder: NativeGeocoder, private activatedRoute : ActivatedRoute) 
-  {}
+  {
 
-   
-
+  }
   ngOnInit() {
   
     this.data = this.activatedRoute.snapshot.paramMap.get('qrText')
   }
-  //Get latitude and longitude
   
   forwardGeocode() {
     if (this.platform.is('cordova')) {
@@ -45,9 +43,12 @@ marker: any;
       this.zone.run(() => {
       this.lat = result[0].latitude;
       this.lng = result[0].longitude;
+      this.addMap(this.lat,this.lng)
       })
       })
-      .catch((error: any) => console.log(error));
+      .catch((error: any) => {
+        console.log("error in forwardGeocode: "+error)
+      });
       } else {
       let geocoder = new google.maps.Geocoder();
       geocoder.geocode({ 'address': this.data }, (results, status) => {
@@ -55,7 +56,8 @@ marker: any;
       this.zone.run(() => {
       this.lat = results[0].geometry.location.lat();
       this.lng = results[0].geometry.location.lng();
-     // console.log('latitude is'+this.lat,'longitude is'+this.lng)
+     console.log('latitude is'+this.lat,'longitude is'+this.lng)
+     this.addMap(this.lat,this.lng)
       })
      
       } else {
@@ -64,11 +66,11 @@ marker: any;
       });
       }
   
-this.addMap(this.lat,this.lng)
+
 
     }
 
-
+//Add Maps
 addMap(lat,long){
   let coordinatesLat = parseFloat(lat);
   let coordinatesLong = parseFloat(long);
@@ -83,6 +85,7 @@ addMap(lat,long){
   this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
   this.getStores(latLng).then((results : Array<any>)=>{
+  
       this.places = results;
       for(let i = 0 ;i < results.length ; i++)
       {
@@ -99,11 +102,13 @@ var service = new google.maps.places.PlacesService(this.map);
 let request = {
   location: latLng,
             types: ["supermarket","grocery_or_supermarket", "store","food"],
-            radius: 15047,
+            radius: 15000,
             name: ["Morrison"]
 };
 return new Promise((resolve,reject)=>{
   service.nearbySearch(request,function(results,status){
+
+  
       if(status === google.maps.places.PlacesServiceStatus.OK)
       {
           resolve(results);    
@@ -140,9 +145,8 @@ google.maps.event.addListener(marker, 'click', function() {
       "</strong><br>" +
       "Address: " +
       place.vicinity +
-      "<br>" +
-      place.opennow +
-      "</div>"
+      "<br>" 
+      
   );
   infoWindow.open(this.map, this);
 });
